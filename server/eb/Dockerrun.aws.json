@@ -1,0 +1,17 @@
+{
+  "AWSEBDockerrunVersion": "2",
+  "containerDefinitions": [
+    {
+      "name": "peertest",
+      "image": "apingjian/anothertag",
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 9000
+        }
+      ],
+      "essential": true,
+      "memory": 128
+    }
+  ]
+}
