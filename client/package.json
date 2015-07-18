@@ -14,14 +14,16 @@
     "babelify": "^6.1.3",
     "watchify": "^3.3.0"
   },
-  "transform": [
-    [
-      "babelify",
-      {
-        "blacklist": [
-          "regenerator"
-        ]
-      }
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "blacklist": [
+            "regenerator"
+          ]
+        }
+      ]
     ]
-  ]
+  }
 }
