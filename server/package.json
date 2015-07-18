@@ -4,11 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "npm run server",
+    "server": "babel src/server.js --out-file dest/server.js --source-maps --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "peer": "^0.2.8"
+  },
+  "devDependencies": {
+    "babel": "^5.6.23"
   }
 }

@@ -2,8 +2,8 @@
   "AWSEBDockerrunVersion": "2",
   "containerDefinitions": [
     {
-      "name": "peertest",
-      "image": "apingjian/anothertag",
+      "name": "server",
+      "image": "pingjian/jibunmo",
       "portMappings": [
         {
           "hostPort": 80,
