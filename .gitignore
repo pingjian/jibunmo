@@ -79,5 +79,5 @@ crashlytics.properties
 crashlytics-build.properties
 
 ### jibunmo
-server/dest/*.js
+*/dest/*.js
 server/dest/*.js.map
