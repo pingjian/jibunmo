@@ -1,10 +1,12 @@
 'use strict';
 
+import uuid from 'node-uuid';
+
 console.log('hello world');
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
 // todo: get uuid
-const MY_ID = '1';
+const MY_ID = uuid.v4();
 
 let peer = new Peer(MY_ID, {
   host: 'jibunmo-dev.elasticbeanstalk.com',
@@ -12,7 +14,6 @@ let peer = new Peer(MY_ID, {
 });
 
 navigator.getUserMedia({video: true, audio: false}, (localStream) => {
-  // todo: display localStream
   document.getElementById('me')
     .setAttribute('src', URL.createObjectURL(localStream));
 
