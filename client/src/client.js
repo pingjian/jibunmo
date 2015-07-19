@@ -16,7 +16,15 @@ let peer = new Peer(MY_ID, {
 
 let getUserMedia = () => {
   return new Promise((resolve, reject) => {
-    navigator.getUserMedia({video: true, audio: false}, (localStream) => {
+    navigator.getUserMedia({
+      video: {
+        mandatory: {
+          maxWidth: 160,
+          maxHeight: 120,
+          maxFrameRate: 5
+        }
+      }
+    }, (localStream) => {
       resolve(localStream);
     }, (error) => {
       reject(error);
