@@ -31,18 +31,23 @@ getUserMedia().then(
       .setAttribute('src', URL.createObjectURL(localStream));
 
     console.log('hello getUserMedia');
-    // todo: get it from PeerServer
     peer.listAllPeers(
       (peers) => {
         console.log(peers);
+        let calleeId = Immutable.Set(peers)
+          .delete(MY_ID)
+          .toJS()[0];
+        console.log(calleeId);
+
+        // todo: think of ways not to send localStream
+        // not sending localStream might consume less bandwidth
+        let outBoundCall = peer.call(calleeId, localStream);
+        console.log(outBoundCall);
+        outBoundCall.on('stream', (remoteStream) => {
+          // todo: display remoteStream
+        });
       }
     );
-    let calleeId = '1';
-    let outBoundCall = peer.call(calleeId);
-
-    //outBoundCall.on('stream', (remoteStream) => {
-    //  // todo: display remoteStream
-    //});
 
     peer.on('call', (inBoundCall) => {
       inBoundCall.answer(localStream)
