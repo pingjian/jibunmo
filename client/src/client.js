@@ -13,6 +13,8 @@ let peer = new Peer(MY_ID, {
 
 navigator.getUserMedia({video: true, audio: false}, (localStream) => {
   // todo: display localStream
+  document.getElementById('me')
+    .setAttribute('src', URL.createObjectURL(localStream));
 
   console.log('hello getUserMedia');
   // todo: get it from PeerServer
