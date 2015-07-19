@@ -7,7 +7,6 @@ import Promise from 'bluebird';
 console.log('hello world');
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-// todo: get uuid
 const MY_ID = uuid.v4();
 
 let peer = new Peer(MY_ID, {
@@ -44,7 +43,8 @@ getUserMedia().then(
         let outBoundCall = peer.call(calleeId, localStream);
         console.log(outBoundCall);
         outBoundCall.on('stream', (remoteStream) => {
-          // todo: display remoteStream
+          document.getElementById('someone')
+            .setAttribute('src', URL.createObjectURL(remoteStream));
         });
       }
     );
