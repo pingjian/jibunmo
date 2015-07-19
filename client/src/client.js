@@ -1,6 +1,8 @@
 'use strict';
 
 import uuid from 'node-uuid';
+import Immutable from 'immutable';
+import Promise from 'bluebird';
 
 console.log('hello world');
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -13,22 +15,32 @@ let peer = new Peer(MY_ID, {
   port: 80
 });
 
-navigator.getUserMedia({video: true, audio: false}, (localStream) => {
-  document.getElementById('me')
-    .setAttribute('src', URL.createObjectURL(localStream));
+let getUserMedia = () => {
+  return new Promise((resolve, reject) => {
+    navigator.getUserMedia({video: true, audio: false}, (localStream) => {
+      resolve(localStream);
+    }, (error) => {
+      reject(error);
+    })
+  })
+};
 
-  console.log('hello getUserMedia');
-  // todo: get it from PeerServer
-  let calleeId = '1';
-  let outBoundCall = peer.call(calleeId);
+getUserMedia().then(
+  (localStream) => {
+    document.getElementById('me')
+      .setAttribute('src', URL.createObjectURL(localStream));
 
-  outBoundCall.on('stream', (remoteStream) => {
-    // todo: display remoteStream
-  });
+    console.log('hello getUserMedia');
+    // todo: get it from PeerServer
+    let calleeId = '1';
+    let outBoundCall = peer.call(calleeId);
 
-  peer.on('call', (inBoundCall) => {
-    inBoundCall.answer(localStream)
-  });
+    outBoundCall.on('stream', (remoteStream) => {
+      // todo: display remoteStream
+    });
 
-}, (err) => {
-});
+    peer.on('call', (inBoundCall) => {
+      inBoundCall.answer(localStream)
+    });
+  }
+);
