@@ -32,12 +32,17 @@ getUserMedia().then(
 
     console.log('hello getUserMedia');
     // todo: get it from PeerServer
+    peer.listAllPeers(
+      (peers) => {
+        console.log(peers);
+      }
+    );
     let calleeId = '1';
     let outBoundCall = peer.call(calleeId);
 
-    outBoundCall.on('stream', (remoteStream) => {
-      // todo: display remoteStream
-    });
+    //outBoundCall.on('stream', (remoteStream) => {
+    //  // todo: display remoteStream
+    //});
 
     peer.on('call', (inBoundCall) => {
       inBoundCall.answer(localStream)
