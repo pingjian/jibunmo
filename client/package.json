@@ -25,5 +25,10 @@
         }
       ]
     ]
+  },
+  "dependencies": {
+    "bluebird": "^2.9.34",
+    "immutable": "^3.7.4",
+    "node-uuid": "^1.4.3"
   }
 }
