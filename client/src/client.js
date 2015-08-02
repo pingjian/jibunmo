@@ -32,12 +32,17 @@ let getUserMedia = () => {
   })
 };
 
+var setLocalStream = function(localStream) {
+  document.getElementById('me')
+    .setAttribute('src', URL.createObjectURL(localStream));
+};
+
 getUserMedia().then(
   (localStream) => {
-    document.getElementById('me')
-      .setAttribute('src', URL.createObjectURL(localStream));
+    setLocalStream(localStream);
 
     console.log('hello getUserMedia');
+
     peer.listAllPeers(
       (peers) => {
         console.log(peers);
