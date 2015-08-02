@@ -3,6 +3,7 @@
 import uuid from 'node-uuid';
 import Immutable from 'immutable';
 import Promise from 'bluebird';
+import _ from 'underscore';
 
 console.log('hello world');
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -49,22 +50,29 @@ _getUserMedia().then(
 
     console.log('hello getUserMedia');
 
-    _peer.listAllPeers(
-      (peers) => {
-        console.log(peers);
-        let calleeId = _getCalleeID(peers);
-        console.log(calleeId);
+    let outBoundCall;
 
-        // todo: think of ways not to send localStream
-        // not sending localStream might consume less bandwidth
-        let outBoundCall = _peer.call(calleeId, localStream);
-        console.log(outBoundCall);
-        outBoundCall.on('stream', (remoteStream) => {
-          document.getElementById('someone')
-            .setAttribute('src', URL.createObjectURL(remoteStream));
+    setInterval(() => {
+        if (!_.isUndefined(outBoundCall)) {
+          outBoundCall.close();
+        }
+
+        _peer.listAllPeers((peers) => {
+          console.log(peers);
+          let calleeId = _getCalleeID(peers);
+          console.log(calleeId);
+
+          // todo: think of ways not to send localStream
+          // not sending localStream might consume less bandwidth
+          outBoundCall = _peer.call(calleeId, localStream);
+          console.log(outBoundCall);
+          outBoundCall.on('stream', (remoteStream) => {
+            document.getElementById('someone')
+              .setAttribute('src', URL.createObjectURL(remoteStream));
+          });
         });
-      }
-    );
+      },
+      5000);
 
     _peer.on('call', (inBoundCall) => {
       inBoundCall.answer(localStream)
