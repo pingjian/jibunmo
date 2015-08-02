@@ -38,16 +38,22 @@ let _setLocalStream = (localStream) => {
     .setAttribute('src', URL.createObjectURL(localStream));
 };
 
+let _getOneRandomly = (array) => {
+  return array[Math.floor(Math.random() * array.length)];
+};
+
 let _getCalleeID = (peers) => {
-  return Immutable.Set(peers)
+  let others = Immutable.Set(peers)
     .delete(_MY_ID)
-    .toJS()[0];
+    .toJS();
+  return _getOneRandomly(others);
 };
 
 let _setRemoteStream = (remoteStream) => {
   document.getElementById('someone')
     .setAttribute('src', URL.createObjectURL(remoteStream));
 };
+
 _getUserMedia().then(
   (localStream) => {
     _setLocalStream(localStream);
