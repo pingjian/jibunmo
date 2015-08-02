@@ -33,7 +33,7 @@ let _getUserMedia = () => {
   })
 };
 
-let _setLocalStream = function(localStream) {
+let _setLocalStream = (localStream) => {
   document.getElementById('me')
     .setAttribute('src', URL.createObjectURL(localStream));
 };
@@ -44,6 +44,10 @@ let _getCalleeID = (peers) => {
     .toJS()[0];
 };
 
+let _setRemoteStream = (remoteStream) => {
+  document.getElementById('someone')
+    .setAttribute('src', URL.createObjectURL(remoteStream));
+};
 _getUserMedia().then(
   (localStream) => {
     _setLocalStream(localStream);
@@ -67,8 +71,7 @@ _getUserMedia().then(
           outBoundCall = _peer.call(calleeId, localStream);
           console.log(outBoundCall);
           outBoundCall.on('stream', (remoteStream) => {
-            document.getElementById('someone')
-              .setAttribute('src', URL.createObjectURL(remoteStream));
+            _setRemoteStream(remoteStream);
           });
         });
       },
