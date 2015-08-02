@@ -3,18 +3,19 @@
 import uuid from 'node-uuid';
 import Immutable from 'immutable';
 import Promise from 'bluebird';
+import _ from 'underscore';
 
 console.log('hello world');
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-const MY_ID = uuid.v4();
+const _MY_ID = uuid.v4();
 
-let peer = new Peer(MY_ID, {
+let _peer = new Peer(_MY_ID, {
   host: 'jibunmo-dev.elasticbeanstalk.com',
   port: 80
 });
 
-let getUserMedia = () => {
+let _getUserMedia = () => {
   return new Promise((resolve, reject) => {
     navigator.getUserMedia({
       video: {
@@ -32,32 +33,57 @@ let getUserMedia = () => {
   })
 };
 
-getUserMedia().then(
+let _setLocalStream = (localStream) => {
+  document.getElementById('me')
+    .setAttribute('src', URL.createObjectURL(localStream));
+};
+
+let _getOneRandomly = (array) => {
+  return array[Math.floor(Math.random() * array.length)];
+};
+
+let _getCalleeID = (peers) => {
+  let others = Immutable.Set(peers)
+    .delete(_MY_ID)
+    .toJS();
+  return _getOneRandomly(others);
+};
+
+let _setRemoteStream = (remoteStream) => {
+  document.getElementById('someone')
+    .setAttribute('src', URL.createObjectURL(remoteStream));
+};
+
+_getUserMedia().then(
   (localStream) => {
-    document.getElementById('me')
-      .setAttribute('src', URL.createObjectURL(localStream));
+    _setLocalStream(localStream);
 
     console.log('hello getUserMedia');
-    peer.listAllPeers(
-      (peers) => {
-        console.log(peers);
-        let calleeId = Immutable.Set(peers)
-          .delete(MY_ID)
-          .toJS()[0];
-        console.log(calleeId);
 
-        // todo: think of ways not to send localStream
-        // not sending localStream might consume less bandwidth
-        let outBoundCall = peer.call(calleeId, localStream);
-        console.log(outBoundCall);
-        outBoundCall.on('stream', (remoteStream) => {
-          document.getElementById('someone')
-            .setAttribute('src', URL.createObjectURL(remoteStream));
+    let outBoundCall;
+
+    setInterval(() => {
+        if (!_.isUndefined(outBoundCall)) {
+          outBoundCall.close();
+        }
+
+        _peer.listAllPeers((peers) => {
+          console.log(peers);
+          let calleeId = _getCalleeID(peers);
+          console.log(calleeId);
+
+          // todo: think of ways not to send localStream
+          // not sending localStream might consume less bandwidth
+          outBoundCall = _peer.call(calleeId, localStream);
+          console.log(outBoundCall);
+          outBoundCall.on('stream', (remoteStream) => {
+            _setRemoteStream(remoteStream);
+          });
         });
-      }
-    );
+      },
+      5000);
 
-    peer.on('call', (inBoundCall) => {
+    _peer.on('call', (inBoundCall) => {
       inBoundCall.answer(localStream)
     });
   }
